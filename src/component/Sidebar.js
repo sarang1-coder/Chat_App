@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 // Import Avatar 
 import {Avatar, IconButton} from '@material-ui/core';
@@ -15,10 +15,26 @@ import SearchTwoToneIcon from '@mui/icons-material/SearchTwoTone';
 import './sidebar.css';
 import SidebarChat from './SidebarChat';
 
+// import DB 
+import db from '../firebase.js';
 
 
 
-export default function slidebar() {
+
+export default function Sidebar() {
+
+  const[rooms,setRooms]=useState([]);
+
+  useEffect(()=>{
+      db.collection('rooms').onSnapshot(snapshot=>{
+        setRooms(snapshot.docs.map(doc=>({
+              id:doc.id,
+              data:doc.data()
+        })))
+      })
+  },[])
+
+
   return (
     <div className='sidebar'>
 
@@ -47,10 +63,16 @@ export default function slidebar() {
             {/*Chat section*/}
             <div className='sidebar-Chat'>
                 <SidebarChat addnewChat/>
-                <SidebarChat/>
-                <SidebarChat/>
-                <SidebarChat/>
-                <SidebarChat/>
+                {
+                  rooms.map(room=>{
+                    return <SidebarChat 
+                              key={room.id}
+                              id={room.id}
+                              name={room.data.name}
+                            />
+                  })
+                }
+                
             </div>
 
         

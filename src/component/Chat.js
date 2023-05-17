@@ -1,5 +1,5 @@
-import { Avatar, IconButton } from '@material-ui/core'
-import React from 'react'
+import { Avatar, IconButton } from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
 import SearchTwoToneIcon from '@mui/icons-material/SearchTwoTone';
 import AttachFileTwoToneIcon from '@mui/icons-material/AttachFileTwoTone';
 import MoreVertTwoToneIcon from '@mui/icons-material/MoreVertTwoTone';
@@ -7,10 +7,56 @@ import InsertEmoticonTwoToneIcon from '@mui/icons-material/InsertEmoticonTwoTone
 import InsertLinkTwoToneIcon from '@mui/icons-material/InsertLinkTwoTone';
 import MicTwoToneIcon from '@mui/icons-material/MicTwoTone';
 import './chat.css';
+import { useParams } from 'react-router-dom';
+import db from '../firebase';
+import firebase from 'firebase/compat/app';
 
 
 
 export default function Chat() {
+
+    const{roomId}= useParams();
+
+    const[roomName,setroomName]=useState('');
+
+    const[input,setInput]=useState('');
+
+    const[messages,setMessages]=useState([]);
+
+
+    useEffect(() => {
+        if(roomId){
+            db.collection('rooms').doc(roomId).onSnapshot(snapshot => {
+                    setroomName(snapshot.data().name);
+            });
+
+            db.collection('rooms').doc(roomId).collection('message').orderBy('timestamp','asc').onSnapshot(snapshot => {
+                setMessages(snapshot.docs.map(doc=>doc.data()))
+            })
+        }
+    },[roomId])
+
+
+
+
+    const textInput = (e) => {
+        setInput(e.target.value);
+    }
+
+
+    const sendMessage = (e) => {
+        e.preventDefault();
+        if(input===''){
+            return alert('Please Enter Message');
+        }
+        db.collection('rooms').doc(roomId).collection('message').add({
+            name:'Sarang',
+            message:input,
+            timestamp:firebase.firestore.FieldValue.serverTimestamp()
+        });
+        setInput('');
+    }
+
   return (
     <div className='chat'>
 
@@ -19,7 +65,7 @@ export default function Chat() {
         <div className='chat-header'>
             <Avatar/>
             <div className='chat-headerInfo'>
-                <h3>Name</h3>
+                <h3>{roomName}</h3>
                 <p>Last Seen</p>
             </div>
 
@@ -35,49 +81,28 @@ export default function Chat() {
         {/*Chat Body*/}
 
         <div className='chat-body'>
+
+
+            {
+                    messages.map(message=>(
                 <p className='chat-message chat-receiver'>
                     <span className='chat-name'>
-                        My Name
+                       {message.name}
                     </span>
-                    Text Msg
+                    {message.message}
                     <span className='chat-time'>
-                        12:00PM
+                        {
+                            new Date(message.timestamp?.seconds*1000).toLocaleTimeString()
+                        }
                     </span>
                 </p>
+                    ))
 
-
-                <p className='chat-message chat-receiver'>
-                    <span className='chat-name'>
-                        My Name
-                    </span>
-                    Text Msg
-                    <span className='chat-time'>
-                        12:00PM
-                    </span>
-                </p>
-
-
-                <p className='chat-message chat-receiver'>
-                    <span className='chat-name'>
-                        My Name
-                    </span>
-                    Text Msg
-                    <span className='chat-time'>
-                        12:00PM
-                    </span>
-                </p>
+            }
 
 
 
-                <p className='chat-message'>
-                    <span className='chat-name'>
-                        My Name
-                    </span>
-                    Text Msg
-                    <span className='chat-time'>
-                        12:00PM
-                    </span>
-                </p>
+                
 
         </div>
 
@@ -87,8 +112,11 @@ export default function Chat() {
         <div className='chat-footer'>
                 <InsertEmoticonTwoToneIcon/>
                 <InsertLinkTwoToneIcon/>
-                <form>
-                    <input type='text' placeholder='Type your Message'/>
+                <form onSubmit={sendMessage}>
+                    <input type='text' 
+                            value={input}
+                            placeholder='Type your Message'
+                            onChange={textInput}/>
                     <input type='submit'/>
                 </form>
                 <MicTwoToneIcon/>
