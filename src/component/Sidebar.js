@@ -9,7 +9,7 @@ import DonutLargeRoundedIcon from '@mui/icons-material/DonutLargeRounded';
 import ChatTwoToneIcon from '@mui/icons-material/ChatTwoTone';
 import MoreVertTwoToneIcon from '@mui/icons-material/MoreVertTwoTone';
 import SearchTwoToneIcon from '@mui/icons-material/SearchTwoTone';
-
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 // Import css 
 import './sidebar.css';
@@ -21,7 +21,9 @@ import db from '../firebase.js';
 
 
 
-export default function Sidebar() {
+export default function Sidebar({setUser,user}) {
+
+
 
   const[rooms,setRooms]=useState([]);
 
@@ -35,18 +37,62 @@ export default function Sidebar() {
   },[])
 
 
+  // Logout Function 
+  const logout=()=>{
+      
+        sessionStorage.setItem('user','');
+        setUser('');
+      
+  }
+
+  // Search Contact 
+  // const[alluser,setAllUser]=useState([]);
+  // const[search,setSearch]=useState('');
+
+  // useEffect(() => {
+  //     const getUser= async () => {
+  //       const data=await db.collection('rooms').onSnapshot((snapshot) => 
+  //       {
+  //         setUser(  
+  //           snapshot.docs.filter((doc) =>doc.data().email!==user.email)
+  //         )
+  //       })
+  //     }
+  //     getUser();
+  // }, []);
+  
+
+  // const searchUser=alluser.filter((user) => {
+  //   if(search){
+  //     if(user.data().name.toLowerCase().includes(search,toLowerCase()))
+  //     {
+  //       return user
+  //     }
+  //   }
+  // });
+
+  // const searchItem=search.map((user)=>{
+  //   return(
+  //     <UserProfile>
+  //       name={user.data().name}
+  //     </UserProfile>
+  //   )
+  // })
+
+
   return (
     <div className='sidebar'>
 
         {/*Header*/}
         <div className='sidebar-header'>
 
-            <Avatar/>
+            <Avatar src={user.photoURL}/>
 
             <div className='sidebar-headerRight'>
                     <IconButton><DonutLargeRoundedIcon/></IconButton>
                     <IconButton><ChatTwoToneIcon/></IconButton>
                     <IconButton><MoreVertTwoToneIcon/></IconButton>
+                    <IconButton> <ExitToAppIcon  onClick={() =>logout()}/></IconButton>
             </div>
           </div>
 
@@ -55,7 +101,11 @@ export default function Sidebar() {
             <div className='sidebar-search'>
                 <div className='sidebar-searchContainer'>
                     <SearchTwoToneIcon/>
-                    <input type='text' placeholder='Search or Start New Chat'/>
+                    <input type='text' 
+                        placeholder='Search or Start New Chat'
+                        // value={search}
+                        // onChange={(e)=>{setSearch(e.target.value)}}
+                        />
                 </div>
             </div>
 

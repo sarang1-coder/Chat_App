@@ -13,7 +13,7 @@ import firebase from 'firebase/compat/app';
 
 
 
-export default function Chat() {
+export default function Chat({user}) {
 
     const{roomId}= useParams();
 
@@ -37,8 +37,6 @@ export default function Chat() {
     },[roomId])
 
 
-
-
     const textInput = (e) => {
         setInput(e.target.value);
     }
@@ -50,12 +48,19 @@ export default function Chat() {
             return alert('Please Enter Message');
         }
         db.collection('rooms').doc(roomId).collection('message').add({
-            name:'Sarang',
+            name:user.displayName,
             message:input,
             timestamp:firebase.firestore.FieldValue.serverTimestamp()
         });
         setInput('');
     }
+
+    const[seed,setSeed]=useState("");
+
+    useEffect(() => {
+        setSeed(Math.floor(Math.random() * 5000));
+    },[])
+
 
   return (
     <div className='chat'>
@@ -63,10 +68,20 @@ export default function Chat() {
         {/*Chat Header*/}
         
         <div className='chat-header'>
-            <Avatar/>
+
+            <Avatar src={`https://api.dicebear.com/api/human/${seed}.svg`}/>
+
             <div className='chat-headerInfo'>
                 <h3>{roomName}</h3>
-                <p>Last Seen</p>
+                <p>
+                    Last Seen{"   "}
+                    {
+                        new Date(
+                            messages[messages.length-1]?.timestamp?.toDate()
+                        ).toUTCString()
+                    }
+                    
+                </p>
             </div>
 
             <div className='header-right'>
@@ -84,8 +99,9 @@ export default function Chat() {
 
 
             {
-                    messages.map(message=>(
-                <p className='chat-message chat-receiver'>
+             messages.map(message=>(
+                <p className={`chat-message ${
+                    message.name===user.displayName && 'chat-receiver'}`}>
                     <span className='chat-name'>
                        {message.name}
                     </span>
@@ -99,10 +115,7 @@ export default function Chat() {
                     ))
 
             }
-
-
-
-                
+     
 
         </div>
 

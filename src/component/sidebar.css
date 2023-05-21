@@ -56,6 +56,7 @@
     flex-direction: column;
     position: relative;
     z-index: 10;
+    
 }
 
 .sidebar-chat{
@@ -63,6 +64,13 @@
     align-items: center;
     border-bottom:1px solid wheat;
     padding: 10px;
+    max-height:30px;
+    overflow: hidden;
+}
+
+.heightc{
+    height: calc(100vh - 20px); /* subtract the height of the header */
+    overflow-y: auto; /* enable vertical scrolling */
 }
 
 .sidebar-chat:hover{
@@ -72,14 +80,18 @@
 
 .sidebar-chatinfo{
     margin-left: 15px;
+    color: black;
+    
 }
 
 .sidebar-chatinfo h2{
     font-size: 16px;
+    text-decoration:none;
 }
 
 .sidebar-chatinfo p{
     font-size: 12px;
+     text-decoration:none;
 }
 
 .sidebar-chat>h2{
