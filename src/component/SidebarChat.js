@@ -35,6 +35,8 @@ export default function SidebarChat({id,name,addnewChat}) {
     }
 
 
+    
+
   return (
             addnewChat ? (
                 
