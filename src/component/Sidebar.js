@@ -86,8 +86,6 @@ export default function Sidebar({setUser,user}) {
         ))}
       </div>
 
-
-
     </div>
   )
 }

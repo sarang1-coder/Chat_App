@@ -15,7 +15,6 @@ import firebase from 'firebase/compat/app';
 
 
 
-
 export default function Chat({user}) {
 
     const{roomId}= useParams();
@@ -76,16 +75,20 @@ export default function Chat({user}) {
 
             <div className='chat-headerInfo'>
                 <h3>{roomName}</h3>
+        {
+                messages.length > 0 && (
+                <>
                 <p>
-                    Last Seen{"   "}
-                    {
-                        new Date(
-                            messages[messages.length-1]?.timestamp?.toDate()
-                        ).toUTCString()
-                    }
-                    
+                    Last Seen{" "}
+                    {new Date(messages[messages.length - 1]?.timestamp?.toDate()).toUTCString()}  
                 </p>
-            </div>
+
+            </>
+                )
+        }
+        </div>
+
+
 
             <div className='header-right'>
                 <IconButton><SearchTwoToneIcon/></IconButton>
