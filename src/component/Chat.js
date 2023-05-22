@@ -115,9 +115,11 @@ export default function Chat({user}) {
                     ))
 
             }
-     
 
         </div>
+
+
+
 
 
         {/*Chat Footer*/}
