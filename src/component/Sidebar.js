@@ -82,6 +82,7 @@ export default function Sidebar({setUser,user}) {
             key={room.id}
             id={room.id}
             name={room.data.name}
+            email={room.data.email}
           />
         ))}
       </div>

@@ -64,6 +64,10 @@ export default function Chat({user}) {
     },[])
 
 
+    
+
+    
+
   return (
     <div className='chat'>
 
